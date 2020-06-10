@@ -6,6 +6,8 @@
     <v-card-actions>
       <span v-if="book.quantity>0">Disponible</span>
       <span v-else>Indisponible</span>
+      <v-spacer></v-spacer>
+      <v-rating readonly="readonly" v-model="book.rating" color="accent"></v-rating>
     </v-card-actions>
   </v-card>
 </template>
