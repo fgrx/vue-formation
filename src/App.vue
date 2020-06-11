@@ -30,7 +30,7 @@
           </v-row>
         </div>
 
-        <div v-if="!searchText || searchText==='' && !searchLangue">
+        <div v-if="searchText==='' && !searchLangue">
           <h2>Top livres</h2>
           <v-row>
             <v-col cols="6" sm="4" v-for="book in topBooks" :key="book.id">
@@ -61,7 +61,7 @@ export default {
 
   data: () => ({
     books: booksdb,
-    searchText: null,
+    searchText: "",
     searchLangue: null,
     booksSearchResults: [],
     itemsLangue: [
@@ -107,15 +107,9 @@ export default {
     },
     reinit() {
       // Autre écriture possible :
-      // this.booksSearchResults = [];
-      // this.searchText = null;
-      // this.searchLangue = null;
-
-      [this.booksSearchResults, this.searchLangue, this.searchText] = [
-        [],
-        null,
-        null
-      ];
+      this.booksSearchResults = [];
+      this.searchText = "";
+      this.searchLangue = null;
     }
   }
 };
