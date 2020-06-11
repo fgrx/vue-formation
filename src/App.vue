@@ -8,42 +8,47 @@
       <v-container>
         <h1>Magasin de livres pour codeurs curieux</h1>
 
-        <h2>Rechercher</h2>
-        <v-row>
-          <v-col cols="12" sm="5">
-            <v-text-field v-model="searchText" label="Mot clef" @keydown="search"></v-text-field>
-          </v-col>
 
-          <v-col cols="12" sm="5">
-            <v-select :items="itemsLangue" v-model="searchLangue" label="langue" @change="search"></v-select>
-          </v-col>
+        <Loading v-if="loading" />
 
-          <v-btn color="primary" @click="reinit">Réinitialiser</v-btn>
-        </v-row>
-        <div v-if="searchText || searchLangue ">
-          <h2>Résultats de la recherche</h2>
-          <h3 v-if="booksSearchResults.length===0">Aucun livre trouvé</h3>
+        <div v-if="!loading">
+          <h2>Rechercher</h2>
           <v-row>
-            <v-col cols="6" sm="4" v-for="book in booksSearchResults" :key="book.id">
-              <BookItem :book="book" />
+            <v-col cols="12" sm="5">
+              <v-text-field v-model="searchText" label="Mot clef" @keydown="search"></v-text-field>
             </v-col>
-          </v-row>
-        </div>
 
-        <div v-if="searchText==='' && !searchLangue">
-          <h2>Top livres</h2>
-          <v-row>
-            <v-col cols="6" sm="4" v-for="book in topBooks" :key="book.id">
-              <BookItem :book="book" />
+            <v-col cols="12" sm="5">
+              <v-select :items="itemsLangue" v-model="searchLangue" label="langue" @change="search"></v-select>
             </v-col>
-          </v-row>
 
-          <h2>Tous les livres</h2>
-          <v-row>
-            <v-col cols="6" sm="4" v-for="book in classicBooks" :key="book.id">
-              <BookItem :book="book" />
-            </v-col>
+            <v-btn color="primary" @click="reinit">Réinitialiser</v-btn>
           </v-row>
+          <div v-if="searchText || searchLangue ">
+            <h2>Résultats de la recherche</h2>
+            <h3 v-if="booksSearchResults.length===0">Aucun livre trouvé</h3>
+            <v-row>
+              <v-col cols="6" sm="4" v-for="book in booksSearchResults" :key="book.id">
+                <BookItem :book="book" />
+              </v-col>
+            </v-row>
+          </div>
+
+          <div v-if="searchText==='' && !searchLangue">
+            <h2>Top livres</h2>
+            <v-row>
+              <v-col cols="6" sm="4" v-for="book in topBooks" :key="book.id">
+                <BookItem :book="book" />
+              </v-col>
+            </v-row>
+
+            <h2>Tous les livres</h2>
+            <v-row>
+              <v-col cols="6" sm="4" v-for="book in classicBooks" :key="book.id">
+                <BookItem :book="book" />
+              </v-col>
+            </v-row>
+          </div>
         </div>
       </v-container>
     </v-content>
@@ -51,25 +56,32 @@
 </template>
 
 <script>
+import Loading from './components/Loading.vue'
 import BookItem from "./components/BookItem.vue";
-import booksdb from "@/data/booksdb";
 
 export default {
   name: "App",
 
-  components: { BookItem },
+  components: { BookItem, Loading },
 
   data: () => ({
-    books: booksdb,
+    books:[],
     searchText: "",
     searchLangue: null,
     booksSearchResults: [],
+    loading:false,
     itemsLangue: [
       { text: "Tout", value: null },
       { text: "Français", value: "fr" },
       { text: "English", value: "en" }
     ]
   }),
+  async created(){
+    this.loading=true
+    const booksInDB= await this.axios.get("http://localhost:3000/books")
+    this.books=booksInDB.data
+    this.loading=false
+  },
   computed: {
     topBooks() {
       // Version longue
