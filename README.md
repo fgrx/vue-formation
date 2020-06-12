@@ -1,6 +1,17 @@
 # vue-formation
 
-## Project setup
+## Installer Json-server
+```
+npm install -g json-server
+```
+
+### Lancer le faux server
+```
+json-server .\booksdb.json
+```
+
+
+## Installer le projet
 ```
 npm install
 ```
