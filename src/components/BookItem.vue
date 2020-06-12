@@ -10,12 +10,14 @@
       <span v-if="book.quantity>0">Disponible</span>
       <span v-else>Indisponible</span>
       <v-spacer></v-spacer>
-      <v-btn @click="buy" v-if="book.quantity>0" dark color="pink"><v-icon>mdi-basket</v-icon> Acheter</v-btn>
+      <v-btn @click="buy(book)" v-if="book.quantity>0" dark color="pink"><v-icon>mdi-basket</v-icon> Acheter</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import buyBook from "@/mixins/BuyBook"
+
 export default {
   props: {
     book: {
@@ -23,13 +25,7 @@ export default {
       default: null
     }
   },
-  methods: {
-    buy() {
-      const achatsInStore=this.$store.state.achats.achats;
-      achatsInStore.push(this.book);
-      this.$store.dispatch("updateAchats",achatsInStore)
-    }
-  },
+  mixins:[buyBook]
 };
 </script>
 
