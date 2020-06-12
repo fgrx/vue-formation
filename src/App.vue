@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <v-toolbar-title>Magasin de livres pour codeurs web</v-toolbar-title>
+      <v-toolbar-title>Magasin de livre pour codeurs web</v-toolbar-title>
        <v-spacer></v-spacer>
 
         <v-btn :to="{name:'Home'}" class='mr-1' exact>Accueil</v-btn>
@@ -119,9 +119,29 @@
         const commande={total : this.totalPanier, items:this.achats }
         
         try{
+          //Ajoute la commande en base de données
           await this.axios.post(`${process.env.VUE_APP_API_SERVER}/commandes`,commande)
-          this.$store.dispatch("updateAchats",[])
           this.thankU="Merci pour votre commande !"
+          this.$store.dispatch("updateAchats",[])
+          
+          //Met à jour le stock de livre
+          const updateStockInDB= book=>{
+            book.quantity--
+            this.axios.put(`${process.env.VUE_APP_API_SERVER}/books/${book.id}`,book)
+          }
+
+
+          // 3 versions possibles :
+          //version longue
+          // for(const book of commande.items){
+          //   updateStockInDB(book)
+          // }
+
+          //version moins longue
+          //commande.items.forEach(book => updateStockInDB(book))
+
+          //version courte
+          commande.items.forEach(updateStockInDB)
         }catch{
           alert("Il y a eu une erreur dans votre commande. Veuillez nous contacter.")
         }
