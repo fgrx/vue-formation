@@ -2,7 +2,6 @@
   <div class="home">
     <h1>Magasin de livres pour codeurs curieux</h1>
 
-
         <Loading v-if="loading" />
 
         <div v-if="!loading">
